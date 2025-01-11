@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Test</title>
+</head>
+<body>
+<h1>Login Test</h1>
+
+<form id="loginForm">
+    <label for="email">email:</label>
+    <input type="text" id="email" name="email" required>
+
+    <label for="password">Password:</label>
+    <input type="password" id="password" name="password" required>
+
+    <button type="submit">Login</button>
+</form>
+
+<h2>Posts</h2>
+<div id="list"></div>
+<button id="btn">Fetch Posts</button>
+
+<script>
+    let token = '';
+
+    async function login(event) {
+        event.preventDefault();
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
+
+        try {
+            const response = await fetch('http://localhost:8080/auth/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ email, password })
+            });
+
+            if (!response.ok) {
+                alert('Login failed!');
+                return;
+            }
+
+            const data = await response.json();
+            token = data.token;
+            alert('Login successful!');
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    }
+
+    async function list() {
+        try {
+            const response = await fetch('http://localhost:8080/posts/list', {
+                method: 'GET',
+                headers: {
+                    'Authorization': 'Bearer ' + token
+                }
+            });
+
+            if (!response.ok) {
+                alert('Failed to fetch posts. Please log in first.');
+                return;
+            }
+
+            const data = await response.json();
+            let mapData = data.map(post => '<li>' + post.title + '</li>').join(' ');
+            document.getElementById('list').innerHTML = '<ul>' + mapData + '</ul>';
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    }
+
+    document.getElementById('loginForm').addEventListener('submit', login);
+    document.getElementById('btn').addEventListener('click', list);
+</script>
+</body>
+</html>
