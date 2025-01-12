@@ -34,7 +34,6 @@ public class DemoApplication implements CommandLineRunner {
 	@Override
 	public void run(String... args) throws Exception {
 		postRepository.deleteAll();
-//		userRepository.deleteAll();
 		List<Post> postList = List.of(
 				new Post(null,"title1","content1","", LocalDateTime.now()),
 				new Post(null,"title2","content2","", LocalDateTime.now()),

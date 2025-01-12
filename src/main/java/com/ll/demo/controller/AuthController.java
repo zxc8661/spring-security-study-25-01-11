@@ -1,5 +1,7 @@
 package com.ll.demo.controller;
 
+import com.ll.demo.controller.dto.AuthRequest;
+import com.ll.demo.controller.dto.AuthResponse;
 import com.ll.demo.model.SiteUser;
 import com.ll.demo.service.AuthService;
 import lombok.RequiredArgsConstructor;
@@ -16,8 +18,15 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("/login")
-    public ResponseEntity<SiteUser> authenticate(@RequestBody SiteUser siteUser){
-        return ResponseEntity.ok(authService.authenticate(siteUser));
+//    public ResponseEntity<SiteUser> authenticate(@RequestBody SiteUser siteUser){
+//        return ResponseEntity.ok(authService.authenticate(siteUser));
+//    }
+    public ResponseEntity<AuthResponse> authenticate(@RequestBody AuthRequest login){
+        SiteUser user = SiteUser.builder()
+                .email(login.email())
+                .password(login.password())
+                .build();
+        return ResponseEntity.ok(authService.authenticate(user));
     }
 
 
